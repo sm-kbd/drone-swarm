@@ -17,6 +17,11 @@ await asyncio.sleep(1)
 ```
 ※ `time.sleep()`使うと同時飛行ではなくなる可能性もあります。  
 ※ もし`codrone_edu.drone.Drone`の関数で`time.sleep`を使っているせいで同時飛行を妨げるものがあれば教えてください。可能なら`async`として再現してみます。
+- ドローンを指定するにはポート名も使用できます。
+```python
+swarm.move_forward(10, "cm", 1, drones=[drone1, drone2, drone3]) # ドローンオブジェクト指定
+swarm.move_forward(10, "cm", 1, drones=["port3", "port3", "port3"]) # ポート名指定
+```
 # 例
 ```python
 import asyncio
