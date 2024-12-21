@@ -103,7 +103,7 @@ class Swarm:
     def add_and_pair(self: Swarm, *drones: tuple[str, Drone]):
         """
         Description
-            Adds the drone objects passed to the storm and pairs them.
+            Adds the passed drone object(s) to the swarm and pairs them.
 
         Arguments
             *drones:
