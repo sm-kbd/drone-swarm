@@ -2,16 +2,21 @@ from __future__ import annotations
 
 from typing import Callable, Any
 from collections.abc import Collection
+from enum import Enum
 
 import asyncio
 
 import time
 import functools
 
+class ModeFlight(Enum):
+    TakeOff = 0
+    Landing = 1
 
-async def __async_takeoff(drone: Drone) -> None:
+
+async def _async_takeoff(drone: Drone) -> None:
     # codrone_edu.droneのDroneクラスのtakeoff関数をasyncとして再作成
-    drone.reset_move()
+    drone.reset_move_values()
     drone.sendTakeOff()
 
     timeout = 4
@@ -24,9 +29,9 @@ async def __async_takeoff(drone: Drone) -> None:
     await asyncio.sleep(4)
 
 
-async def __async_land(drone: Drone) -> None:
+async def _async_land(drone: Drone) -> None:
     # codrone_edu.droneのDroneクラスのland関数をasyncとして再作成
-    drone.reset_move()
+    drone.reset_move_values()
     drone.previous_land[0] = drone.previous_land[0] + drone.get_position_data()[1]
     drone.previous_land[1] = drone.previous_land[1] + drone.get_position_data()[2]
     drone.sendLanding()
@@ -148,8 +153,8 @@ class Swarm:
 
     async def takeoff(self: Swarm, *drones: tuple[str | Drone]) -> None:
         await asyncio.gather(
-            *[__async_takeoff(drone) for drone in self._drones.values()]
+            *[_async_takeoff(drone) for drone in self._drones.values()]
         )
 
     async def land(self: Swarm) -> None:
-        await asyncio.gather(*[__async_land(drone) for drone in self._drones.values()])
+        await asyncio.gather(*[_async_land(drone) for drone in self._drones.values()])
