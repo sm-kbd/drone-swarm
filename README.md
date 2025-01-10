@@ -1,3 +1,33 @@
+# `codrone_edu.drone`ライブラリにバグがあるので、`Swarm`を利用するときは`asyncio.sleep`を`original_asyncio_sleep`として宣言してください。
+```python
+import asyncio
+
+from codrone_edu.drone import *
+
+from swarm import Swarm
+
+asyncio.sleep = original_asyncio_sleep
+```
+## 説明
+`codrone_edu.drone`の中にある：
+```python
+...
+original_asyncio_sleep = asyncio.sleep
+
+async def interruptible_sleep(duration):
+  interval = 0.1
+  elapsed = 0.0
+
+  while elapsed < duration:
+    await original_asyncio_sleep(min(interval, duration - elapsed))
+    checkInterrupt()
+    elapsed += interval
+
+asyncio.sleep = interruptible_sleep
+...
+```
+のせいで、`asyncio.sleep`が本来の`asyncio.sleep`と異なる関数に変えられています。本来の`asyncio.sleep`が`original_asyncio_sleep`として保存されているので、`asyncio.sleep = original_asyncio_sleep`で`asyncio.sleep`を本来の関数に戻せます。
+
 # swarm
 asyncioを使ったスウォームクラス。
 
