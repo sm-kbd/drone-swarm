@@ -63,6 +63,7 @@ class Swarm:
             # ユーザーがドローンを指定していない場合すべてのドローンを選択。
             drones = self._drones.values()
         else:
+            del kwargs["drones"]
             if isinstance(drones[0], str):
                 drones = [self._drones[port] for port in drones]
             else:
@@ -158,3 +159,8 @@ class Swarm:
 
     async def land(self: Swarm) -> None:
         await asyncio.gather(*[_async_land(drone) for drone in self._drones.values()])
+
+    async def spiral(self, speed=50, seconds=5, direction=1):
+        power = int(speed)
+        self.sendControl(0, power, 100 * -direction, -power)
+        await asyncio.sleep(seconds)
